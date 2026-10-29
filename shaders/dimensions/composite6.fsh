@@ -51,6 +51,17 @@ const bool colortex18Clear = false;
 	const bool colortex16Clear = true;
 #endif
 
+#ifdef SUPER_RESOLUTION
+	/*
+	const int colortex19Format = RG16F;				// motion vectors for the Super Resolution mod (composite5->SR)
+	const int colortex20Format = RGBA16F;			// frame upscaled by the Super Resolution mod (SR->composite6)
+	const int colortex21Format = R32F;				// exposure for the Super Resolution mod, 1x1 (deferred->SR)
+	*/
+	const bool colortex19Clear = false;
+	const bool colortex20Clear = true; // black instead of an old frame, if the mod ever skips the upscale
+	const bool colortex21Clear = false;
+#endif
+
 
 #ifdef SCREENSHOT_MODE
 	/*
@@ -74,6 +85,10 @@ uniform sampler2D colortex5;
 uniform sampler2D colortex6;
 uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
+
+#ifdef SUPER_RESOLUTION
+	uniform sampler2D colortex20;
+#endif
 
 uniform vec2 texelSize;
 uniform float frameTimeCounter;
@@ -446,7 +461,17 @@ vec4 computeTAA(vec2 texcoord, bool hand){
 
 void main() {
 /* RENDERTARGETS:5 */
-	#ifdef TAA
+	#ifdef SUPER_RESOLUTION
+		// the Super Resolution mod upscaled colortex3 into colortex20 right before this pass, it replaces TAA
+		vec3 color = texelFetch(colortex20, ivec2(gl_FragCoord.xy), 0).rgb;
+
+		#ifdef DAMAGE_TAKEN_EFFECT
+			////// same trailing effect as the TAA path
+			if(CriticalDamageTaken > 0.01) color = mix(color, texelFetch(colortex5, ivec2(gl_FragCoord.xy), 0).rgb, sqrt(CriticalDamageTaken)*0.8);
+		#endif
+
+		gl_FragData[0] = clamp(fp10Dither(vec4(color, 1.0), triangularize(interleaved_gradientNoise())), 0.0, 65000.0);
+	#elif defined TAA
 		vec2 taauTC = clamp(texcoord*RENDER_SCALE, vec2(0.0), RENDER_SCALE - texelSize*2.0);
 		
 		float dataUnpacked = decodeVec2(texelFetch(colortex1,ivec2(gl_FragCoord.xy*RENDER_SCALE),0).w).y; 

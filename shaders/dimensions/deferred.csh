@@ -13,6 +13,11 @@ uniform float near;
 uniform int frameCounter;
 uniform sampler2D depthtex2;
 
+#ifdef SUPER_RESOLUTION
+	// exposure for the Super Resolution mod, see superresolution.v3.json
+	layout (r32f) uniform image2D colorimg21;
+#endif
+
 
 float luma(vec3 color) {
 	return dot(color,vec3(0.21, 0.72, 0.07));
@@ -79,4 +84,8 @@ void main() {
     avgBrightnessSSBO = avgBrightness;
     avgL2SSBO = avgL2;
     rodExposureDepthSSBO = vec2(rodExposure, centerDepth);
+
+    #ifdef SUPER_RESOLUTION
+        imageStore(colorimg21, ivec2(0), vec4(exposure));
+    #endif
 }
