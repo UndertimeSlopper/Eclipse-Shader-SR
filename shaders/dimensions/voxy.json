@@ -7,7 +7,11 @@
     "opaqueDrawBuffers": [1, 8],
     "excludeLodsFromVanillaDepth": true,
     "translucentDrawBuffers": [16, 7, 11, 14],
-    #ifdef TAA
+    #ifdef SUPER_RESOLUTION
+    "taaOffset": "{ 
+    return srJitterOffset*2.0*texelSize/SR_RENDER_SCALE_FACTOR; 
+    }",
+    #elif defined TAA
     "taaOffset": "{ 
     const vec2[4] offsets = vec2[4](
 		vec2(-0.125,	-0.875),
@@ -18,7 +22,9 @@
     return offsets[framemod4_DH]*texelSize; 
     }",
     #endif
-    #ifdef TAA_UPSCALING 
+    #ifdef SUPER_RESOLUTION
+    "renderScale": [SR_RENDER_SCALE_FACTOR, SR_RENDER_SCALE_FACTOR],
+    #elif defined TAA_UPSCALING 
     "renderScale": [SCALE_FACTOR, SCALE_FACTOR],
     #endif
     "blending": {-1:"SRC_ALPHA ONE_MINUS_SRC_ALPHA ONE_MINUS_DST_ALPHA ONE", 2:"off"},
@@ -122,6 +128,9 @@
         "vxModelViewInv",
         "frameCounter",
         "framemod8",
+        #ifdef SUPER_RESOLUTION
+        "srJitterOffset",
+        #endif
         "dhVoxyFarPlane",
         "dhVoxyNearPlane",
         "vxProj",

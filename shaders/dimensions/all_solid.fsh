@@ -260,6 +260,11 @@ const vec2[8] offsets = vec2[8](vec2(1./8.,-3./8.),
 									vec2(3,7.)/8.,
 									vec2(7.,-7.)/8.);
 
+#ifdef SUPER_RESOLUTION
+	// the jitter of this frame, picked by the Super Resolution mod (see /lib/TAA_jitter.glsl)
+	uniform vec2 srJitterOffset;
+#endif
+
 
 uniform float near;
 
@@ -461,7 +466,11 @@ void main() {
 	float BN = blueNoise();
 	float R2 = R2_dither();
 
-	vec2 tempOffset = offsets[framemod8];
+	#ifdef SUPER_RESOLUTION
+		vec2 tempOffset = srJitterOffset * 2.0;
+	#else
+		vec2 tempOffset = offsets[framemod8];
+	#endif
 
 	vec3 fragpos = toScreenSpace(FragCoord*vec3(texelSize/RENDER_SCALE,1.0)-vec3(vec2(tempOffset)*texelSize*0.5, 0.0));
 	vec3 playerpos = mat3(gbufferModelViewInverse) * fragpos  + gbufferModelViewInverse[3].xyz;

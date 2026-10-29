@@ -21,6 +21,10 @@
 								vec2(3,7.)/8.,
 								vec2(7.,-7.)/8.);
 
+	#ifdef SUPER_RESOLUTION
+		// the jitter of this frame, picked by the Super Resolution mod (see /lib/TAA_jitter.glsl)
+		uniform vec2 srJitterOffset;
+	#endif
 #endif
 
 void main() {
@@ -35,7 +39,11 @@ void main() {
 			gl_Position.xy = gl_Position.xy * RENDER_SCALE + RENDER_SCALE * gl_Position.w - gl_Position.w;
 		#endif
 		#ifdef TAA
-			gl_Position.xy += offsets[framemod8] * gl_Position.w*texelSize;
+			#ifdef SUPER_RESOLUTION
+				gl_Position.xy += srJitterOffset * 2.0 * gl_Position.w*texelSize;
+			#else
+				gl_Position.xy += offsets[framemod8] * gl_Position.w*texelSize;
+			#endif
 		#endif
 		
 	#endif

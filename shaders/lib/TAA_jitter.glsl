@@ -18,3 +18,16 @@
 		vec2( 7.0,  7.0)/8.0
 	);
 #endif
+
+// jitter of the current frame, in the same units as the offsets above
+#ifdef SUPER_RESOLUTION
+	// the Super Resolution mod picks the jitter (in pixels), see shaders.properties
+	#ifndef VOXY_PROGRAM
+		uniform vec2 srJitterOffset;
+	#endif
+	#define TAA_JITTER (srJitterOffset * 2.0)
+	#define TAA_JITTER_DH (srJitterOffset * 2.0)
+#else
+	#define TAA_JITTER offsets[framemod8]
+	#define TAA_JITTER_DH offsets[framemod4_DH]
+#endif

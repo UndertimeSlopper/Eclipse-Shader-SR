@@ -138,7 +138,7 @@ vec3 calculateNormal(vec3 v0, vec3 v1, vec3 v2) {
 void main() {
 
     #ifdef SHADER_GRASS
-        vec2 TAA_offsets = offsets[framemod8];
+        vec2 TAA_offsets = TAA_JITTER;
     #endif
     
     int i;

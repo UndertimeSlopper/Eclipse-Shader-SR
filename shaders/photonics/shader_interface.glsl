@@ -36,7 +36,7 @@ vec3 toScreenSpace(vec3 p) {
 #include "/lib/TAA_jitter.glsl"
 
 #ifdef TAA
-    vec2 TAA_Offset = offsets[framemod8];
+    vec2 TAA_Offset = TAA_JITTER;
 #else
     vec2 TAA_Offset = vec2(0.0);
 #endif
@@ -143,7 +143,7 @@ vec3 indirect_light_color = AmbientLightColor * ambient_brightness;
 
 vec2 get_taa_jitter() {
     #ifdef TAA
-        return vec2(offsets[framemod8]*0.5*texelSize);
+        return vec2(TAA_JITTER*0.5*texelSize);
     #else
         return vec2(0.0);
     #endif

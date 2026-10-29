@@ -263,5 +263,9 @@ void main() {
 	#if defined TAA_UPSCALING || defined SUPER_RESOLUTION
 		gl_Position.xy = gl_Position.xy * RENDER_SCALE + RENDER_SCALE * gl_Position.w - gl_Position.w;
 	#endif
+	#ifdef SUPER_RESOLUTION
+		// the upscaler needs this geometry jittered like the rest of the scene
+		gl_Position.xy += TAA_JITTER * gl_Position.w*texelSize;
+	#endif
 
 }

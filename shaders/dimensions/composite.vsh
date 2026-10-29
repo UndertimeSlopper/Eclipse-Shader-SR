@@ -48,7 +48,7 @@ void main() {
 	#endif
 
 	#ifdef TAA
-		TAA_Offset = offsets[framemod8];
+		TAA_Offset = TAA_JITTER;
 	#else
 		TAA_Offset = vec2(0.0);
 	#endif

@@ -322,9 +322,9 @@ void main() {
 	#ifdef TAA
 		#if defined ENTITIES && defined IS_IRIS
 		// remove jitter for nametags lol
-			if (entityId != 1600) gl_Position.xy += offsets[framemod8] * gl_Position.w*texelSize;
+			if (entityId != 1600) gl_Position.xy += TAA_JITTER * gl_Position.w*texelSize;
 		#else
-			gl_Position.xy += offsets[framemod8] * gl_Position.w*texelSize;
+			gl_Position.xy += TAA_JITTER * gl_Position.w*texelSize;
 		#endif
 	#endif
 

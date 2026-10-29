@@ -21,6 +21,14 @@ uniform int framemod8;
 									vec2(-7.,-1.)/8.,
 									vec2(3,7.)/8.,
 									vec2(7.,-7.)/8.);
+
+// Super Resolution mod, same check as in /lib/settings.glsl which this program does not include
+#if defined SR_ENABLE && defined SR_ALGO_NONE
+	#if SR_ENABLE == 1 && SR_SHOULD_APPLY_SCALE == 1 && SR_USING_ALGO != SR_ALGO_NONE && SR_ALGO_SUPPORTS_JITTER == 1
+		#define SUPER_RESOLUTION 1
+		uniform vec2 srJitterOffset;
+	#endif
+#endif
 //////////////////////////////VOID MAIN//////////////////////////////
 //////////////////////////////VOID MAIN//////////////////////////////
 //////////////////////////////VOID MAIN//////////////////////////////
@@ -38,7 +46,12 @@ void main() {
 	gl_Position = ftransform();
 	
 	color = gl_Color;
+	#ifdef SUPER_RESOLUTION
+	gl_Position.xy = gl_Position.xy * SR_RENDER_SCALE_FACTOR + SR_RENDER_SCALE_FACTOR * gl_Position.w - gl_Position.w;
+	gl_Position.xy += srJitterOffset * 2.0 * gl_Position.w*texelSize;
+	#else
 	#ifdef TAA
 	gl_Position.xy += offsets[framemod8] * gl_Position.w*texelSize;
+	#endif
 	#endif
 }

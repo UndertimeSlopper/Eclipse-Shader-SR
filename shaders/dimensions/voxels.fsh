@@ -51,6 +51,11 @@ const int   MAX_OCCLUSION_POINTS   = MAX_ITERATIONS;
 uniform vec2 texelSize;
 uniform int framemod8;
 
+#ifdef SUPER_RESOLUTION
+	// the jitter of this frame, picked by the Super Resolution mod (see /lib/TAA_jitter.glsl)
+	uniform vec2 srJitterOffset;
+#endif
+
 
 const vec2 dcdx = vec2(0.0);
 const vec2 dcdy = vec2(0.0);
@@ -347,7 +352,12 @@ void main() {
 	float BN = blueNoise();
 	float R2 = R2_dither();
 
-	vec3 fragpos = toScreenSpace(FragCoord*vec3(texelSize/RENDER_SCALE,1.0));
+	#ifdef SUPER_RESOLUTION
+		// undo the jitter voxels.vsh adds for the Super Resolution mod
+		vec3 fragpos = toScreenSpace(FragCoord*vec3(texelSize/RENDER_SCALE,1.0)-vec3(srJitterOffset*texelSize, 0.0));
+	#else
+		vec3 fragpos = toScreenSpace(FragCoord*vec3(texelSize/RENDER_SCALE,1.0));
+	#endif
 	vec3 playerpos = mat3(gbufferModelViewInverse) * fragpos  + gbufferModelViewInverse[3].xyz;
 	vec3 worldpos = playerpos + cameraPosition;
 
