@@ -15,8 +15,32 @@
                     "type": "BEFORE",
                     "pass": "composite6"
                 },
-                "disabled_algorithms": ["fsr1", "sgsr1", "sgsr2", "dlssrr"],
+                "disabled_algorithms": ["fsr1", "sgsr1", "sgsr2"],
                 "inputs": {
+#if SR_ENABLE == 1 && defined SR_ALGO_DLSSRR
+#if SR_USING_ALGO == SR_ALGO_DLSSRR
+                    "diffuse_albedo": {
+                        "enabled": true,
+                        "src": "autotex22",
+                        "region": [0, 0, -1, -1]
+                    },
+                    "specular_albedo": {
+                        "enabled": true,
+                        "src": "autotex23",
+                        "region": [0, 0, -1, -1]
+                    },
+                    "normal_roughness": {
+                        "enabled": true,
+                        "src": "autotex24",
+                        "region": [0, 0, -1, -1]
+                    },
+                    "specular_hit_distance": {
+                        "enabled": true,
+                        "src": "autotex25",
+                        "region": [0, 0, -1, -1]
+                    },
+#endif
+#endif
                     "color": {
                         "enabled": true,
                         "src": "autotex3",

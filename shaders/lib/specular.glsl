@@ -1,3 +1,9 @@
+#ifdef RAY_RECONSTRUCTION
+	// how far the reflection ray of this pixel travelled, a guide for DLSS Ray Reconstruction. misses count as far away.
+	#define RR_MISS_DISTANCE 65000.0
+	float reflectionHitDistance = RR_MISS_DISTANCE;
+#endif
+
 float invLinZ (float lindepth){
 	return -((2.0*near/lindepth)-far-near)/(far-near);
 }
@@ -2042,6 +2048,11 @@ vec4 photonicsReflection(
 		bool hitTranslucent = translucentHits > 0u;
 		if(!hitTranslucent && !ray.result_hit) return color;
 
+		#ifdef RAY_RECONSTRUCTION
+			if(ray.result_hit) reflectionHitDistance = length(ray.result_position - rt_camera_position - origin);
+			else reflectionHitDistance = length(translucentHitRays[0].hitPos + world_offset - cameraPosition - origin);
+		#endif
+
 		vec3 DirectLightColor = lightSourceColorSSBO / 1400.0;
 		vec3 AmbientLightColor = averageSkyCol_CloudsSSBO;
 		vec3 indirectLightColor = skyGroundColSSBO / 1200.0;
@@ -2178,6 +2189,10 @@ vec4 getEnvironmentReflections(
 	#else
 		raytracePos = rayTraceSpeculars(mat3(gbufferModelView) * reflectedVector, viewPos, noise.y, quality, isHand, reflectionLength, depthCheck);
 		if (raytracePos.z > 1.00001) return reflection;
+	#endif
+
+	#ifdef RAY_RECONSTRUCTION
+		if(raytracePos.z < 0.9999999) reflectionHitDistance = distance(toScreenSpace2(raytracePos, depthCheck), viewPos);
 	#endif
 	
 	// use higher LOD as the reflection goes on, to blur it. this helps denoise a little.

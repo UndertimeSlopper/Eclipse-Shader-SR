@@ -60,6 +60,19 @@ const bool colortex18Clear = false;
 	const bool colortex19Clear = false;
 	const bool colortex20Clear = true; // black instead of an old frame, if the mod ever skips the upscale
 	const bool colortex21Clear = false;
+
+	#ifdef RAY_RECONSTRUCTION
+		/*
+		const int colortex22Format = RGBA8;			// diffuse albedo for DLSS Ray Reconstruction (composite1->SR)
+		const int colortex23Format = RGBA8;			// specular albedo for DLSS Ray Reconstruction (composite1->SR)
+		const int colortex24Format = RGBA16F;		// world space normals and linear roughness for DLSS Ray Reconstruction (composite1->SR)
+		const int colortex25Format = R32F;			// reflection hit distance for DLSS Ray Reconstruction (composite1->SR)
+		*/
+		const bool colortex22Clear = false;
+		const bool colortex23Clear = false;
+		const bool colortex24Clear = false;
+		const bool colortex25Clear = false;
+	#endif
 #endif
 
 

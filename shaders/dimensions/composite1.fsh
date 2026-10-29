@@ -1162,6 +1162,14 @@ void main() {
 		vec3 feetPlayerPos = mat3(gbufferModelViewInverse) * viewPos;
 		vec3 feetPlayerPos_normalized = normalize(feetPlayerPos);
 
+		#ifdef RAY_RECONSTRUCTION
+			// guides for DLSS Ray Reconstruction (Super Resolution mod, see superresolution.v3.json).
+			// the sky gets no albedo, so the denoiser leaves it as it is.
+			vec3 RR_diffuseAlbedo = vec3(0.0);
+			vec3 RR_specularAlbedo = vec3(0.0);
+			vec4 RR_normalRoughness = vec4(-feetPlayerPos_normalized, 1.0);
+		#endif
+
 		vec3 worldPos = feetPlayerPos + cameraPosition;
 
 		#ifdef POM
@@ -1726,6 +1734,26 @@ void main() {
 			#endif
 		#endif
 
+		#ifdef RAY_RECONSTRUCTION
+			#if defined DEFERRED_SPECULAR
+				// the same reflectance the reflections get blended with, see specularReflections() and composite2
+				float RR_roughness = (1.0 - SpecularTex.r) * (1.0 - SpecularTex.r);
+				float RR_f0 = SpecularTex.g == 0.0 ? 0.02 : SpecularTex.g;
+				bool RR_isMetal = RR_f0 > 229.5/255.0;
+				vec3 RR_albedo = RR_f0 == 1.0 ? sqrt(albedo) : albedo;
+				vec3 RR_reflectance = RR_isMetal ? (RR_f0 == 1.0 ? RR_albedo : HCM_F0[int(clamp(RR_f0*255.0 - 229.5,0.0,7.0))]) : vec3(RR_f0);
+				float RR_fresnel = shlickFresnelRoughness(-abs(dot(feetPlayerPos_normalized, specularNormal)), RR_roughness);
+
+				RR_specularAlbedo = (RR_reflectance + (1.0-RR_reflectance) * RR_fresnel) * (RR_isMetal ? RR_albedo : vec3(1.0));
+				RR_specularAlbedo *= 1.0 - getReflectionVisibility(RR_f0, RR_roughness);
+				RR_diffuseAlbedo = RR_isMetal ? vec3(0.0) : albedo * (1.0 - RR_specularAlbedo);
+				RR_normalRoughness = vec4(specularNormal, 1.0 - SpecularTex.r);
+			#else
+				RR_diffuseAlbedo = albedo;
+				RR_normalRoughness = vec4(normal, 1.0 - SpecularTex.r);
+			#endif
+		#endif
+
 		gl_FragData[0].rgb = FINAL_COLOR;
 
 	}else{
@@ -1933,9 +1961,29 @@ void main() {
 		// }
 	#endif
 
+	#ifdef RAY_RECONSTRUCTION
+		#if defined DEFERRED_SPECULAR && defined DENOISED_REFLECTIONS
+			#define RR_GUIDES 4
+		#else
+			#define RR_GUIDES 1
+		#endif
+		gl_FragData[RR_GUIDES] = vec4(RR_diffuseAlbedo, 1.0);
+		gl_FragData[RR_GUIDES+1] = vec4(RR_specularAlbedo, 1.0);
+		gl_FragData[RR_GUIDES+2] = RR_normalRoughness;
+		gl_FragData[RR_GUIDES+3] = vec4(reflectionHitDistance, 0.0, 0.0, 1.0);
+	#endif
+
 	#if defined DEFERRED_SPECULAR && defined DENOISED_REFLECTIONS
+		#ifdef RAY_RECONSTRUCTION
+	/* RENDERTARGETS:3,0,15,8,22,23,24,25 */
+		#else
 	/* RENDERTARGETS:3,0,15,8 */
+		#endif
 	#else
+		#ifdef RAY_RECONSTRUCTION
+	/* RENDERTARGETS:3,22,23,24,25 */
+		#else
 	/* RENDERTARGETS:3 */
+		#endif
 	#endif
 }

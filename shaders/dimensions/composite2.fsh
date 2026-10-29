@@ -525,6 +525,8 @@ void main() {
 
       vec3 denoisedReflections = currentFrame.rgb;
 
+      // DLSS Ray Reconstruction (Super Resolution mod) denoises the reflections Photonics traces, so they reach it unfiltered
+      #if !(defined RAY_RECONSTRUCTION && defined PHOTONICS && defined PHOTONICS_ACTIVE && defined VOXEL_REFLECTIONS_SOLID)
       if(roughness > 0.005 && alpha < 0.9999 && !hand && !entities && !opaqueParticles
         #if defined DISTANT_HORIZONS || defined VOXY
           && z < 1.0
@@ -534,6 +536,7 @@ void main() {
 
         gl_FragData[0].rgb = denoisedReflections;
       }
+      #endif
 
       denoisedReflections.rgb = mix(FINAL_COLOR, denoisedReflections.rgb, F0);
       FINAL_COLOR = mix(denoisedReflections.rgb, FINAL_COLOR, alpha);
