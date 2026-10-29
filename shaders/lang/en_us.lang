@@ -1204,12 +1204,14 @@ screen.Post_Processing.comment = Configure settings for all post processing effe
     screen.Purkinje_effect.comment = Configure settings related to the purkinje effect.
     option.SHARPENING.comment = Configure the amount of contrast adapitive sharpening that is applied to the image. This can really bring out lost details from anti-aliasing or upscaling.
     option.BLOOM_STRENGTH.comment = Configure the amount of bloom that is applied to the image. §bWhat is this?§r Bloom is the soft glow on everything, to describe that something is bright or not.
-    screen.TAA_OPTIONS.comment = Configure settings related to anti-aliasing.
-        option.SCREENSHOT_MODE.comment = §aTHIS DOES NOT CHANGE GRAPHICS QUALITY IN ANY WAY§r.  Toggle frame accumulation to get a low noise image. §bWhat is this?§r It stacks frames that happend onto the next frame that is generated, so it is like a long exposure photo.
-        option.TAA.comment = Toggle temporal anti-aliasing. This removes all jagged edges on things, softens the image, and helps remove noise for many effects. This will cause ghosting or trailing because it uses past frames for extra information on the world. §aPERFORMANCE COST:§r low
-        option.BLEND_FACTOR.comment = Configure how much of frame history is used. high numbers means it relies less on frame history, so it may look flickery and noisy. low numbers rely more on frame history, so it may look less noisy, but more smudged with more trailing.
-        option.TAA_UPSCALING.comment = Toggle temporal upscaling. This retains a good amount of quality from a lower resolution image when it upscales. so you can still have a high looking resolution compared to typical upsampling and still have better performance.
-        option.SCALE_FACTOR.comment = Configure from what fraction of your resolution to upscale from - §abelow 0.50x is not recommended, it is only allowed for fun!§r
+    screen.TAA_OPTIONS.comment = Configure settings related to anti-aliasing. §eWhile the Super Resolution mod upscales with DLSS, DLSS Ray Reconstruction, XeSS or FSR 2/3/4, it replaces TAA and temporal upscaling, so the settings on this page are ignored. Set it to None or turn it off to use them again.§r
+        option.SCREENSHOT_MODE.comment = §aTHIS DOES NOT CHANGE GRAPHICS QUALITY IN ANY WAY§r.  Toggle frame accumulation to get a low noise image. §bWhat is this?§r It stacks frames that happend onto the next frame that is generated, so it is like a long exposure photo. §e(Ignored while the Super Resolution mod upscales, it replaces this.)§r
+        option.TAA.comment = Toggle temporal anti-aliasing. This removes all jagged edges on things, softens the image, and helps remove noise for many effects. This will cause ghosting or trailing because it uses past frames for extra information on the world. §aPERFORMANCE COST:§r low §e(Ignored while the Super Resolution mod upscales, it replaces this.)§r
+        option.BLEND_FACTOR.comment = Configure how much of frame history is used. high numbers means it relies less on frame history, so it may look flickery and noisy. low numbers rely more on frame history, so it may look less noisy, but more smudged with more trailing. §e(Ignored while the Super Resolution mod upscales, it replaces this.)§r
+        option.TAA_UPSCALING.comment = Toggle temporal upscaling. This retains a good amount of quality from a lower resolution image when it upscales. so you can still have a high looking resolution compared to typical upsampling and still have better performance. §e(Ignored while the Super Resolution mod upscales, it replaces this.)§r
+        option.SCALE_FACTOR.comment = Configure from what fraction of your resolution to upscale from - §abelow 0.50x is not recommended, it is only allowed for fun!§r §e(Ignored while the Super Resolution mod upscales, it replaces this.)§r
+        option.RESPONSIVE_TAA.comment = §e(Ignored while the Super Resolution mod upscales, it replaces this.)§r
+        option.BLEND_FACTOR_DURING_MOVEMENT.comment = §e(Ignored while the Super Resolution mod upscales, it replaces this.)§r
 
         
 	screen.COLOR_GRADING.comment = Advanced color grading options
@@ -1275,6 +1277,7 @@ option.DH_CHUNK_FADING = Chunk Fading
 option.DH_AMBIENT_OCCLUSION = Ambient Occlusion on LOD Chunks
 option.DH_SUBSURFACE_SCATTERING = Sub-Surface Scattering on LOD Chunks
 option.DH_SCREENSPACE_REFLECTIONS = Screen-Space Reflections on LOD Chunks
+option.DH_TAA_JITTER.comment = §e(Ignored while the Super Resolution mod upscales, it replaces this.)§r
 
 option.DISTANT_HORIZONS_SHADOWMAP = §c(DO NOT USE IF YOU DO NOT KNOW WHAT THIS IS)§r DH shadowmap support
 option.DISTANT_HORIZONS_SHADOWMAP.comment =  §cTHIS SETTING WILL DESTROY PERFORMANCE THIS WILL MAKE SHADOWS LOOK BLOCKY, FLICKERY, AND LOW DETAIL§r. set shadow distance to 32 chunks (or more). set shadow resolution to 4096 (or more)
