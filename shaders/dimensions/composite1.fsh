@@ -1962,15 +1962,18 @@ void main() {
 	#endif
 
 	#ifdef RAY_RECONSTRUCTION
+		// Iris only rewrites gl_FragData with plain number indices
 		#if defined DEFERRED_SPECULAR && defined DENOISED_REFLECTIONS
-			#define RR_GUIDES 4
+			gl_FragData[4] = vec4(RR_diffuseAlbedo, 1.0);
+			gl_FragData[5] = vec4(RR_specularAlbedo, 1.0);
+			gl_FragData[6] = RR_normalRoughness;
+			gl_FragData[7] = vec4(reflectionHitDistance, 0.0, 0.0, 1.0);
 		#else
-			#define RR_GUIDES 1
+			gl_FragData[1] = vec4(RR_diffuseAlbedo, 1.0);
+			gl_FragData[2] = vec4(RR_specularAlbedo, 1.0);
+			gl_FragData[3] = RR_normalRoughness;
+			gl_FragData[4] = vec4(reflectionHitDistance, 0.0, 0.0, 1.0);
 		#endif
-		gl_FragData[RR_GUIDES] = vec4(RR_diffuseAlbedo, 1.0);
-		gl_FragData[RR_GUIDES+1] = vec4(RR_specularAlbedo, 1.0);
-		gl_FragData[RR_GUIDES+2] = RR_normalRoughness;
-		gl_FragData[RR_GUIDES+3] = vec4(reflectionHitDistance, 0.0, 0.0, 1.0);
 	#endif
 
 	#if defined DEFERRED_SPECULAR && defined DENOISED_REFLECTIONS
