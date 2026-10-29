@@ -7,6 +7,10 @@
 
   #define RENDER_SCALE vec2(SCALE_FACTOR, SCALE_FACTOR)
   #define UPSCALING_SHARPNENING 2.0 - SCALE_FACTOR - SCALE_FACTOR
+#elif defined SUPER_RESOLUTION
+  // the Super Resolution mod picks the render scale and does the upscaling
+  #define RENDER_SCALE vec2(SR_RENDER_SCALE_FACTOR, SR_RENDER_SCALE_FACTOR)
+  #define UPSCALING_SHARPNENING 0.0
 #else
   #define RENDER_SCALE vec2(1.0, 1.0)
   #define UPSCALING_SHARPNENING 0.0

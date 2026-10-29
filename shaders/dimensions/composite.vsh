@@ -53,7 +53,7 @@ void main() {
 		TAA_Offset = vec2(0.0);
 	#endif
 
-	#ifdef TAA_UPSCALING
+	#if defined TAA_UPSCALING || defined SUPER_RESOLUTION
 		gl_Position.xy = (gl_Position.xy*0.5+0.5)*RENDER_SCALE*2.0-1.0;
 	#endif
 }

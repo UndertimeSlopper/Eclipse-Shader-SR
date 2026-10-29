@@ -1299,6 +1299,28 @@ const vec3 aerochrome_color = mix(vec3(1.0, 0.0, 0.0), vec3(0.715, 0.303, 0.631)
 #if DEBUG_VIEW == debug_DEPTHTEX0 || DEBUG_VIEW == debug_DEPTHTEX1
 	#undef TAA
 #endif
+
+// Super Resolution mod (superresolution.v3.json). its SR_ macros only exist while the mod is installed.
+// while it upscales with a temporal upscaler, it decides the render scale and the jitter, and replaces TAA and the TAA upscaler.
+// with anything else (off, None, or an upscaler without jitter) the pack renders like without the mod.
+#if defined SR_ENABLE && defined SR_ALGO_NONE
+	#if SR_ENABLE == 1 && SR_SHOULD_APPLY_SCALE == 1 && SR_USING_ALGO != SR_ALGO_NONE && SR_ALGO_SUPPORTS_JITTER == 1
+		#define SUPER_RESOLUTION 1
+	#endif
+#endif
+
+#ifdef SUPER_RESOLUTION
+	#undef TAA
+	#define TAA 1
+	#undef TAA_UPSCALING
+
+	// DLSS Ray Reconstruction only exists when it is turned on in the experimental settings of the mod
+	#ifdef SR_ALGO_DLSSRR
+		#if SR_USING_ALGO == SR_ALGO_DLSSRR
+			#define RAY_RECONSTRUCTION 1
+		#endif
+	#endif
+#endif
 // fix settings
 #ifdef ISOLATE_RESOURCEPACK_SKY
 #endif

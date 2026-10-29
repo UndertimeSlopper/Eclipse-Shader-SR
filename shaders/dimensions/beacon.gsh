@@ -139,7 +139,7 @@ void main() {
 
         if(data_in[i].color.a < 1.0) gl_Position = vec4(10,10,10,0);
 
-        #ifdef TAA_UPSCALING
+        #if defined TAA_UPSCALING || defined SUPER_RESOLUTION
             gl_Position.xy = gl_Position.xy * RENDER_SCALE + RENDER_SCALE * gl_Position.w - gl_Position.w;
         #endif
         #ifdef TAA

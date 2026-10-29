@@ -517,7 +517,7 @@ void Emission(
 
 float bias(){
 	// bias mipmapping as window resolution and / or render scale changes.
-	#ifdef TAA_UPSCALING
+	#if defined TAA_UPSCALING || defined SUPER_RESOLUTION
 		return (1.0 - texelSize.x * 2560.0) + (0.0 - (1.0-RENDER_SCALE.x) * 2.0);
 	#else
 		return 1.0 - texelSize.x * 2560.0;

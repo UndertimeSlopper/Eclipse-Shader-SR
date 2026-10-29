@@ -455,7 +455,7 @@ void main() {
 #endif
 
 	#if !defined SHADER_GRASS || defined ENTITIES || defined HAND || defined BLOCKENTITIES || defined CUTOUT
-		#ifdef TAA_UPSCALING
+		#if defined TAA_UPSCALING || defined SUPER_RESOLUTION
 			gl_Position.xy = gl_Position.xy * RENDER_SCALE + RENDER_SCALE * gl_Position.w - gl_Position.w;
 		#endif
 		#ifdef TAA
